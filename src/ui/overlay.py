@@ -1,30 +1,32 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve
-from PyQt6.QtGui import QColor, QPalette, QFont
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QFont
+from core.logger import get_logger
 
 class OSD(QWidget):
     def __init__(self):
         super().__init__()
+        self.logger = get_logger()
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint | 
             Qt.WindowType.WindowStaysOnTopHint | 
             Qt.WindowType.Tool |
-            Qt.WindowType.X11BypassWindowManagerHint # Helps on some WMs
+            Qt.WindowType.X11BypassWindowManagerHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
 
         # Style
-        self.layout = QVBoxLayout()
-        self.label = QLabel("Kapsulate")
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._layout = QVBoxLayout()
+        self._label = QLabel("Kapsulate")
+        self._label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         font = QFont("Sans Serif", 24, QFont.Weight.Bold)
-        self.label.setFont(font)
-        self.label.setStyleSheet("color: white;")
+        self._label.setFont(font)
+        self._label.setStyleSheet("color: white;")
         
-        self.layout.addWidget(self.label)
-        self.setLayout(self.layout)
+        self._layout.addWidget(self._label)
+        self.setLayout(self._layout)
 
         # Background
         self.setStyleSheet("""
@@ -33,12 +35,13 @@ class OSD(QWidget):
             padding: 20px;
         """)
 
-        self.hide_timer = QTimer()
-        self.hide_timer.setSingleShot(True)
-        self.hide_timer.timeout.connect(self.hide)
+        self._hide_timer = QTimer()
+        self._hide_timer.setSingleShot(True)
+        self._hide_timer.timeout.connect(self.hide)
 
     def show_message(self, text, duration=1500):
-        self.label.setText(text)
+        self.logger.debug(f"OSD Message: {text}")
+        self._label.setText(text)
         self.adjustSize()
         
         # Center on screen (rough approximation, can be improved)
@@ -50,7 +53,7 @@ class OSD(QWidget):
             self.move(int(x), int(y))
         
         self.show()
-        self.hide_timer.start(duration)
+        self._hide_timer.start(duration)
 
 _osd_instance = None
 
