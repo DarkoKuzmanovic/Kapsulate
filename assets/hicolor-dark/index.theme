@@ -1,0 +1,11 @@
+[Icon Theme]
+Name=hicolor-dark
+Comment=Icons for dark themes
+Directories=scalable/apps
+
+[scalable/apps]
+Size=16
+Type=Scalable
+MinSize=8
+MaxSize=256
+Context=Applications
