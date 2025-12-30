@@ -5,7 +5,8 @@
 ---
 
 ## Sprint 1: Critical Fixes
-*These issues prevent the app from working correctly and should be addressed first.*
+
+_These issues prevent the app from working correctly and should be addressed first._
 
 - [x] **Fix hardcoded relative paths** (`main.py`)
 - [x] **Handle DBus registration failure properly** (`listener.py`)
@@ -14,7 +15,8 @@
 ---
 
 ## Sprint 2: Functionality Fixes
-*These issues cause features to work incorrectly or provide poor user experience.*
+
+_These issues cause features to work incorrectly or provide poor user experience._
 
 - [x] **Add QCoreApplication to CLI** (`cli.py`)
 - [x] **Show password feedback to user** (`listener.py`, `actions.py`)
@@ -24,7 +26,8 @@
 ---
 
 ## Sprint 3: Code Quality
-*These improve maintainability and developer experience.*
+
+_These improve maintainability and developer experience._
 
 - [x] **Implement proper logging** (all files)
 - [x] **Remove unused code**
@@ -35,26 +38,31 @@
 ---
 
 ## Sprint 4: Enhancements (Future)
-*Nice-to-have improvements for later.*
 
-- [ ] **Listen for theme changes at runtime**
+_Nice-to-have improvements for later._
+
+- [x] **Listen for theme changes at runtime**
+
   - Update tray icon when user switches themes
   - Use DBus signal from `org.freedesktop.portal.Settings`
 
-- [ ] **Add "About" dialog**
+- [x] **Add "About" dialog**
+
   - Show version, author, links
 
 - [ ] **System startup integration**
+
   - Add `.desktop` file for autostart
   - Add "Start with system" toggle in menu
 
-- [ ] **Error notification system**
+- [x] **Error notification system**
   - Show tray notifications for errors instead of just printing
 
 ---
 
 ## Completed
-*Move completed tasks here for reference.*
+
+_Move completed tasks here for reference._
 
 - [x] ~~Refactor system tray icon to use KDE-idiomatic approach~~ (2025-12-30)
 - [x] ~~Sprint 1: Critical Fixes~~ (2025-12-30)
@@ -63,5 +71,5 @@
   - Centralized logging system (src/core/logger.py)
   - Removed dead code (window_move_left)
   - Named constants for delays
-  - Standardized private method naming (_)
+  - Standardized private method naming (\_)
   - Documented config/reload relationship with keyd
