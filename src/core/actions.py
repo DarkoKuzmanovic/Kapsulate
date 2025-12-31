@@ -12,9 +12,13 @@ class Actions:
             logger.debug(f"Running command: {cmd}")
             subprocess.Popen(cmd)
         except FileNotFoundError:
-            logger.error(f"Command not found: {cmd}")
+            logger.error(f"Command not found: {cmd[0] if cmd else 'empty command'}")
+        except PermissionError:
+            logger.error(f"Permission denied executing command: {cmd}")
+        except OSError as e:
+            logger.error(f"OS error running command {cmd}: {e}")
         except Exception as e:
-            logger.error(f"Error running command {cmd}: {e}")
+            logger.exception(f"Unexpected error running command {cmd}: {e}")
 
     @staticmethod
     def open_task_manager():
@@ -38,7 +42,7 @@ class Actions:
         logger = get_logger()
         chars = string.ascii_letters + string.digits + "!@#$%^&*"
         pwd = "".join(secrets.choice(chars) for _ in range(16))
-        
+
         # We need a way to copy to clipboard (wl-copy)
         try:
             subprocess.run(["wl-copy", pwd], check=True)

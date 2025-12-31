@@ -189,25 +189,6 @@ class KapsulateApp:
             self._update_tray_icon()
             self._apply_icon_to_tray()
 
-    def _on_theme_changed(self, message):
-        """Handle theme change signal from DBus."""
-        args = message.arguments() if isinstance(message, QDBusMessage) else [message]
-
-        # Check if this is the color-scheme setting
-        if len(args) >= 2:
-            namespace = args[0] if len(args) > 0 else ""
-            key = args[1] if len(args) > 1 else ""
-
-            if namespace == "org.freedesktop.appearance" and key == "color-scheme":
-                value = args[2] if len(args) > 2 else 0
-                new_is_dark = int(value) == 1
-
-                if new_is_dark != self._is_dark:
-                    self._is_dark = new_is_dark
-                    self.logger.info(f"Theme changed to: {'dark' if self._is_dark else 'light'}")
-                    self._update_tray_icon()
-                    self._apply_icon_to_tray()
-
     def _detect_dark_theme(self):
         """Check if the system is using a dark theme via freedesktop portal."""
         try:

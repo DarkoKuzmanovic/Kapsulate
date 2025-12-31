@@ -2,10 +2,14 @@ import subprocess
 from PyQt6.QtCore import QObject, pyqtSignal, QThread
 from evdev import UInput, ecodes as e
 from core.logger import get_logger
+from ui.overlay import get_osd
 
-# Constants for delays
-KEY_PRESS_DELAY = 0.05
-CLIPBOARD_SYNC_DELAY = 0.1
+# Constants for delays (in milliseconds)
+KEY_PRESS_DELAY_MS = 50
+CLIPBOARD_SYNC_DELAY_MS = 100
+
+# Maximum number of active threads to keep in memory
+MAX_ACTIVE_THREADS = 10
 
 class TransformationWorker(QObject):
     finished = pyqtSignal(str)  # Emits the transformed text or None
@@ -24,14 +28,14 @@ class TransformationWorker(QObject):
                 ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
                 ui.write(e.EV_KEY, e.KEY_C, 1)
                 ui.syn()
-                QThread.msleep(int(KEY_PRESS_DELAY * 1000))
+                QThread.msleep(KEY_PRESS_DELAY_MS)
                 ui.write(e.EV_KEY, e.KEY_C, 0)
                 ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
                 ui.syn()
 
                 # Give it a moment to copy
-                QThread.msleep(int(CLIPBOARD_SYNC_DELAY * 1000))
-                
+                QThread.msleep(CLIPBOARD_SYNC_DELAY_MS)
+
                 original = self._get_clipboard()
                 if not original:
                     self.logger.warning("Clipboard empty after Ctrl+C simulation")
@@ -42,18 +46,18 @@ class TransformationWorker(QObject):
                 if transformed != original:
                     self._set_clipboard(transformed)
                     # Give it a moment to set clipboard
-                    QThread.msleep(int(KEY_PRESS_DELAY * 1000))
-                    
+                    QThread.msleep(KEY_PRESS_DELAY_MS)
+
                     self.logger.debug("Simulating Ctrl+V for paste")
                     # 2. Simulate Ctrl+V
                     ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
                     ui.write(e.EV_KEY, e.KEY_V, 1)
                     ui.syn()
-                    QThread.msleep(int(KEY_PRESS_DELAY * 1000))
+                    QThread.msleep(KEY_PRESS_DELAY_MS)
                     ui.write(e.EV_KEY, e.KEY_V, 0)
                     ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
                     ui.syn()
-                    
+
                     self.finished.emit(transformed)
                 else:
                     self.logger.debug("Text already in target case, skipping paste")
@@ -96,29 +100,48 @@ class TextEngine:
     def process_selection(mode, on_finished):
         logger = get_logger()
         logger.debug(f"Process selection triggered with mode: {mode}")
-        
+
         thread = QThread()
         worker = TransformationWorker(mode)
         worker.moveToThread(thread)
-        
+
         thread.started.connect(worker.run)
         worker.finished.connect(lambda res: on_finished(res))
-        
-        # Log errors if any
-        worker.error.connect(lambda err: logger.error(f"TextEngine Worker error: {err}"))
-        
+
+        # Log errors and show OSD notification to user
+        def handle_error(err):
+            logger.error(f"TextEngine Worker error: {err}")
+            try:
+                get_osd().show_message("Transformation Failed")
+            except Exception as osd_err:
+                logger.warning(f"Failed to show OSD error: {osd_err}")
+
+        worker.error.connect(handle_error)
+
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
-        
-        # Keep references to prevent GC
+
+        # Keep references to prevent GC with bounded list
         TextEngine._active_threads = getattr(TextEngine, "_active_threads", [])
+
+        # Limit the list size to prevent unbounded growth
+        if len(TextEngine._active_threads) >= MAX_ACTIVE_THREADS:
+            # Remove oldest finished threads
+            TextEngine._active_threads = [
+                (t, w) for t, w in TextEngine._active_threads
+                if t.isRunning()
+            ][:MAX_ACTIVE_THREADS - 1]
+
         TextEngine._active_threads.append((thread, worker))
-        
-        # Cleanup routine
+
+        # Cleanup routine with error handling
         def cleanup():
-            if (thread, worker) in TextEngine._active_threads:
-                TextEngine._active_threads.remove((thread, worker))
-        
+            try:
+                if (thread, worker) in TextEngine._active_threads:
+                    TextEngine._active_threads.remove((thread, worker))
+            except (ValueError, RuntimeError) as e:
+                logger.debug(f"Thread cleanup note: {e}")
+
         thread.finished.connect(cleanup)
         thread.start()
