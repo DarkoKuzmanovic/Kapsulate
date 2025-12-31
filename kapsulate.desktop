@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Kapsulate
+Comment=Keyboard-driven productivity utility for KDE Plasma
+Exec=kapsulate
+Icon=kapsulate
+Type=Application
+Terminal=false
+Categories=Utility;System;
+X-KDE-autostart-phase=2

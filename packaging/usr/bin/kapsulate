@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+"""
+Kapsulate - Keyboard-driven productivity utility for KDE Plasma
+Wrapper script for installed package
+"""
+import sys
+import os
+
+# Add the package's Python module path
+sys.path.insert(0, '/usr/share/kapsulate')
+
+# Import and run the main application
+from main import KapsulateApp
+
+if __name__ == "__main__":
+    kapsulate = KapsulateApp()
+    kapsulate.run()

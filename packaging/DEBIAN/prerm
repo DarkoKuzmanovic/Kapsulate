@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    remove|upgrade|deconfigure)
+        # Remove autostart file from system level
+        if [ -f /etc/xdg/autostart/kapsulate.desktop ]; then
+            rm -f /etc/xdg/autostart/kapsulate.desktop
+        fi
+        ;;
+esac
+
+exit 0

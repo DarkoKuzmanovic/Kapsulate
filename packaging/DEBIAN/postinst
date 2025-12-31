@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        # Update desktop database
+        if command -v update-desktop-database &> /dev/null; then
+            update-desktop-database /usr/share/applications &>/dev/null || true
+        fi
+
+        # Update icon cache
+        if command -v gtk-update-icon-cache &> /dev/null; then
+            gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor &>/dev/null || true
+        fi
+
+        # Copy desktop file to system autostart (disabled by default)
+        if [ -f /usr/share/applications/kapsulate.desktop ]; then
+            cp /usr/share/applications/kapsulate.desktop /etc/xdg/autostart/
+            chmod 644 /etc/xdg/autostart/kapsulate.desktop
+            echo "Kapsulate installed successfully"
+        fi
+
+        # Create config directory if it doesn't exist
+        if [ ! -d /etc/kapsulate ]; then
+            mkdir -p /etc/kapsulate
+        fi
+
+        # Copy default config if not present
+        if [ ! -f /etc/kapsulate/kapsulate.conf ]; then
+            cp /usr/share/kapsulate/kapsulate.conf /etc/kapsulate/kapsulate.conf
+        fi
+        ;;
+esac
+
+exit 0

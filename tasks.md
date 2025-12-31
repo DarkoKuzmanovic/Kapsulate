@@ -50,7 +50,7 @@ _Nice-to-have improvements for later._
 
   - Show version, author, links
 
-- [ ] **System startup integration**
+- [x] **System startup integration**
 
   - Add `.desktop` file for autostart
   - Add "Start with system" toggle in menu

@@ -3,7 +3,9 @@ import os
 import sys
 
 def setup_logging(base_dir):
-    log_dir = os.path.join(base_dir, "logs")
+    # Use XDG user data directory for logs (writable by regular users)
+    xdg_data_home = os.environ.get('XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
+    log_dir = os.path.join(xdg_data_home, 'kapsulate', 'logs')
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, "kapsulate.log")
 

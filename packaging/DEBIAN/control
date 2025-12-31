@@ -1,0 +1,13 @@
+Package: kapsulate
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: python3, python3-pyqt6, keyd, python3-dbus
+Maintainer: Darko Kuzmanovic <darko.kuzmanovic@gmail.com>
+Description: Keyboard-driven productivity utility for KDE Plasma
+  Kapsulate is a keyboard-driven productivity utility that integrates with
+  keyd to provide enhanced keyboard functionality on KDE Plasma.
+  It features a system tray interface, text overlay capabilities, and
+  seamless configuration management.
+Homepage: https://github.com/DarkoKuzmanovic/Kapsulate

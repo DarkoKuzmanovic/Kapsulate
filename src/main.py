@@ -72,6 +72,19 @@ class KapsulateApp:
         self.about_action.triggered.connect(self._show_about)
         self.menu.addAction(self.about_action)
 
+        # Autostart Action (only if installed via DEB)
+        if self._is_autostart_available():
+            self.autostart_action = QAction("Start with system", self.menu)
+            self.autostart_action.setCheckable(True)
+            self.autostart_action.setChecked(self._is_autostart_enabled())
+            self.autostart_action.triggered.connect(self._toggle_autostart)
+            self.menu.addAction(self.autostart_action)
+            self.logger.debug("Autostart option available")
+        else:
+            self.logger.debug("Autostart not available (not installed via DEB)")
+
+        self.menu.addSeparator()
+
         # Quit Action
         self.quit_action = QAction("Quit", self.menu)
         self.quit_action.triggered.connect(self.app.quit)
@@ -89,7 +102,15 @@ class KapsulateApp:
         )
 
     def _open_config(self):
-        config_path = os.path.join(BASE_DIR, "config", "kapsulate.conf")
+        # Try system config first (installed package)
+        config_path = "/etc/kapsulate/kapsulate.conf"
+        if not os.path.exists(config_path):
+            # Try user config directory
+            config_path = os.path.expanduser("~/.config/kapsulate/kapsulate.conf")
+        if not os.path.exists(config_path):
+            # Fall back to local config (development mode)
+            config_path = os.path.join(BASE_DIR, "config", "kapsulate.conf")
+
         if os.path.exists(config_path):
             self.logger.info(f"Opening config: {config_path}")
             QDesktopServices.openUrl(QUrl.fromLocalFile(config_path))
@@ -132,7 +153,14 @@ class KapsulateApp:
     def _update_tray_icon(self):
         """Update icon path based on current theme."""
         icon_variant = "hicolor-dark" if self._is_dark else "hicolor-light"
-        self._icon_path = os.path.join(BASE_DIR, "assets", icon_variant, "scalable", "apps", "kapsulate.svg")
+
+        # Try system icon paths first (installed package)
+        system_icon_path = f"/usr/share/icons/{icon_variant}/scalable/apps/kapsulate.svg"
+        if os.path.exists(system_icon_path):
+            self._icon_path = system_icon_path
+        else:
+            # Fall back to local assets (development mode)
+            self._icon_path = os.path.join(BASE_DIR, "assets", icon_variant, "scalable", "apps", "kapsulate.svg")
 
     def _apply_icon_to_tray(self):
         """Apply the current icon to the tray."""
@@ -230,6 +258,55 @@ class KapsulateApp:
         about_box.setText(about_text)
         about_box.setIcon(QMessageBox.Icon.Information)
         about_box.exec()
+
+    def _is_autostart_available(self):
+        """Check if autostart is available (DEB installed)."""
+        system_desktop = "/usr/share/applications/kapsulate.desktop"
+        return os.path.exists(system_desktop)
+
+    def _is_autostart_enabled(self):
+        """Check if autostart is enabled for current user."""
+        autostart_path = os.path.expanduser("~/.config/autostart/kapsulate.desktop")
+        return os.path.exists(autostart_path)
+
+    def _toggle_autostart(self, enabled):
+        """Enable or disable autostart for current user."""
+        autostart_dir = os.path.expanduser("~/.config/autostart")
+        autostart_path = os.path.join(autostart_dir, "kapsulate.desktop")
+        system_desktop = "/usr/share/applications/kapsulate.desktop"
+
+        if enabled:
+            os.makedirs(autostart_dir, exist_ok=True)
+            try:
+                os.symlink(system_desktop, autostart_path)
+                self.logger.info("Autostart enabled")
+                self.tray_icon.showMessage(
+                    "Kapsulate",
+                    "Autostart enabled",
+                    QSystemTrayIcon.MessageIcon.Information,
+                    2000
+                )
+            except OSError as e:
+                self.logger.error(f"Failed to enable autostart: {e}")
+                self._show_error("Error", f"Failed to enable autostart: {e}")
+                # Revert the checkbox state
+                self.autostart_action.setChecked(False)
+        else:
+            if os.path.exists(autostart_path):
+                try:
+                    os.remove(autostart_path)
+                    self.logger.info("Autostart disabled")
+                    self.tray_icon.showMessage(
+                        "Kapsulate",
+                        "Autostart disabled",
+                        QSystemTrayIcon.MessageIcon.Information,
+                        2000
+                    )
+                except OSError as e:
+                    self.logger.error(f"Failed to disable autostart: {e}")
+                    self._show_error("Error", f"Failed to disable autostart: {e}")
+                    # Revert the checkbox state
+                    self.autostart_action.setChecked(True)
 
     def run(self):
         self.logger.info("Starting event loop...")
