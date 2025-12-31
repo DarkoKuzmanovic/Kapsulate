@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.darkokuzmanovic.kapsulate</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Kapsulate</name>
+  <summary>Keyboard-driven productivity utility for KDE Plasma</summary>
+  <description>
+    <p>
+      Kapsulate is a keyboard-driven productivity utility that integrates with
+      keyd to provide enhanced keyboard functionality on KDE Plasma.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>System tray interface</li>
+      <li>Text overlay capabilities</li>
+      <li>Seamless configuration management</li>
+      <li>Theme-aware icons</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">kapsulate.desktop</launchable>
+  <url type="homepage">https://github.com/DarkoKuzmanovic/Kapsulate</url>
+  <url type="bugtracker">https://github.com/DarkoKuzmanovic/Kapsulate/issues</url>
+  <developer_name>Darko Kuzmanovic</developer_name>
+  <releases>
+    <release version="1.0.1" date="2025-12-31"/>
+    <release version="1.0.0" date="2025-12-30"/>
+  </releases>
+  <content_rating type="oars-1.1"/>
+</component>

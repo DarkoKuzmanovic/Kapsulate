@@ -10,7 +10,7 @@ from core.listener import KapsulateService, KapsulateServiceError
 from core.logger import setup_logging, get_logger
 
 # Application metadata
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 APP_AUTHOR = "Darko Kuzmanovic"
 APP_WEBSITE = "https://github.com/DarkoKuzmanovic/Kapsulate"
 

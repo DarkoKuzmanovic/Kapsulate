@@ -3,7 +3,7 @@ set -e
 
 # Configuration
 PACKAGE_NAME="kapsulate"
-VERSION="1.0.0"
+VERSION=$(grep "^Version:" packaging/DEBIAN/control | cut -d' ' -f2)
 ARCH="amd64"
 BUILD_DIR="build"
 PACKAGE_DIR="${BUILD_DIR}/${PACKAGE_NAME}_${VERSION}_${ARCH}"
@@ -55,6 +55,16 @@ cp -r src/* "${PACKAGE_DIR}/usr/share/kapsulate/"
 
 # Copy default config
 cp config/kapsulate.conf "${PACKAGE_DIR}/usr/share/kapsulate/kapsulate.conf"
+
+# Create doc and metainfo directories
+mkdir -p "${PACKAGE_DIR}/usr/share/doc/kapsulate"
+mkdir -p "${PACKAGE_DIR}/usr/share/metainfo"
+
+# Copy copyright file
+cp packaging/DEBIAN/copyright "${PACKAGE_DIR}/usr/share/doc/kapsulate/"
+
+# Copy AppStream metadata
+cp packaging/usr/share/metainfo/io.github.darkokuzmanovic.kapsulate.metainfo.xml "${PACKAGE_DIR}/usr/share/metainfo/"
 
 # Calculate installed size
 INSTALLED_SIZE=$(du -sk "${PACKAGE_DIR}" | cut -f1)

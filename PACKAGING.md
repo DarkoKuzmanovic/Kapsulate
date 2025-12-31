@@ -64,18 +64,20 @@ sudo apt-get install -f
 
 ## What Gets Installed
 
-| Location                                                     | Content                                |
-| ------------------------------------------------------------ | -------------------------------------- |
-| `/usr/bin/kapsulate`                                         | Main executable wrapper script         |
-| `/usr/share/kapsulate/`                                      | Python source code                     |
-| `/usr/share/applications/kapsulate.desktop`                  | Desktop entry file                     |
-| `/usr/share/autostart/kapsulate.desktop`                     | Autostart entry (system-level)         |
-| `/usr/share/icons/hicolor/scalable/apps/kapsulate.svg`       | Default icon                           |
-| `/usr/share/icons/hicolor-dark/scalable/apps/kapsulate.svg`  | Dark theme icon                        |
-| `/usr/share/icons/hicolor-light/scalable/apps/kapsulate.svg` | Light theme icon                       |
-| `/etc/kapsulate/kapsulate.conf`                              | Default configuration file             |
-| `~/.local/share/kapsulate/logs/kapsulate.log`                | Application logs (user-writable)       |
-| `~/.config/kapsulate/kapsulate.conf`                         | User-specific configuration (optional) |
+| Location                                                               | Content                                 |
+| ---------------------------------------------------------------------- | --------------------------------------- |
+| `/usr/bin/kapsulate`                                                   | Main executable wrapper script          |
+| `/usr/share/kapsulate/`                                                | Python source code                      |
+| `/usr/share/applications/kapsulate.desktop`                            | Desktop entry file                      |
+| `/usr/share/autostart/kapsulate.desktop`                               | Autostart entry (system-level)          |
+| `/usr/share/icons/hicolor/scalable/apps/kapsulate.svg`                 | Default icon                            |
+| `/usr/share/icons/hicolor-dark/scalable/apps/kapsulate.svg`            | Dark theme icon                         |
+| `/usr/share/icons/hicolor-light/scalable/apps/kapsulate.svg`           | Light theme icon                        |
+| `/usr/share/doc/kapsulate/copyright`                                   | License and copyright information       |
+| `/usr/share/metainfo/io.github.darkokuzmanovic.kapsulate.metainfo.xml` | AppStream metadata for software centers |
+| `/etc/kapsulate/kapsulate.conf`                                        | Default configuration file              |
+| `~/.local/share/kapsulate/logs/kapsulate.log`                          | Application logs (user-writable)        |
+| `~/.config/kapsulate/kapsulate.conf`                                   | User-specific configuration (optional)  |
 
 ## Autostart Integration
 
@@ -123,6 +125,11 @@ kapsulate_1.0.0_amd64/
 │       │   ├── hicolor/scalable/apps/kapsulate.svg
 │       │   ├── hicolor-dark/scalable/apps/kapsulate.svg
 │       │   └── hicolor-light/scalable/apps/kapsulate.svg
+│       ├── doc/
+│       │   └── kapsulate/
+│       │       └── copyright
+│       ├── metainfo/
+│       │   └── io.github.darkokuzmanovic.kapsulate.metainfo.xml
 │       └── kapsulate/
 │           ├── main.py
 │           ├── cli.py
