@@ -1,0 +1,70 @@
+{
+  "mcpServers": {
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "alwaysAllow": [
+        "puppeteer_screenshot",
+        "puppeteer_navigate",
+        "puppeteer_click",
+        "puppeteer_fill",
+        "puppeteer_select",
+        "puppeteer_hover",
+        "puppeteer_evaluate"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": "",
+        "CONTEXT7_API_KEY": "ctx7sk-047ce6a6-c04b-4176-9aab-c3d6b9b208dc"
+      },
+      "alwaysAllow": ["get-library-docs", "resolve-library-id"]
+    },
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena-mcp-server",
+        "--context",
+        "ide-assistant",
+        "--enable-web-dashboard",
+        "false"
+      ],
+      "alwaysAllow": [
+        "activate_project",
+        "check_onboarding_performed",
+        "delete_memory",
+        "edit_memory",
+        "find_file",
+        "find_referencing_symbols",
+        "find_symbol",
+        "get_current_config",
+        "get_symbols_overview",
+        "initial_instructions",
+        "insert_after_symbol",
+        "insert_before_symbol",
+        "list_dir",
+        "list_memories",
+        "onboarding",
+        "read_memory",
+        "rename_symbol",
+        "replace_symbol_body",
+        "search_for_pattern",
+        "think_about_collected_information",
+        "think_about_task_adherence",
+        "think_about_whether_you_are_done",
+        "write_memory"
+      ]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "BSAR5pkUJnLpZkrt-o6TKcl3eIVZCd2"
+      }
+    }
+  }
+}
